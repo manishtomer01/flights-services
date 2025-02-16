@@ -7,7 +7,7 @@ const router = express.Router();
 
 // /api/v1/cities POST
 router.post('/',
-    // CityMiddlewares.validateCreateRequest,
+    CityMiddlewares.validateCreateRequest,
     CityController.createCity);
 
 
