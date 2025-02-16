@@ -1,4 +1,4 @@
-const {StatusCodes} = require('http-status-codes');
+const { StatusCodes } = require('http-status-codes');
 
 const { CityRepository } = require('../repositories');
 const AppError = require('../utils/errors/app-error');
@@ -9,8 +9,8 @@ async function createCity(data) {
     try {
         const city = await cityRepository.create(data);
         return city;
-    } catch(error) {
-        if(error.name == 'SequelizeValidationError' || error.name == 'SequelizeUniqueConstraintError') {
+    } catch (error) {
+        if (error.name == 'SequelizeValidationError' || error.name == 'SequelizeUniqueConstraintError') {
             let explanation = [];
             error.errors.forEach((err) => {
                 explanation.push(err.message);
@@ -21,6 +21,41 @@ async function createCity(data) {
     }
 }
 
+/*
+
+- implement update
+- implement delete
+
+ */
+
+
+
+async function destroyCity(id) {
+    try {
+        const airplane = await cityRepository.destroy(id);
+        return airplane;
+    } catch (error) {
+        if (error.statusCode == StatusCodes.NOT_FOUND) {
+            throw new AppError('The Airplane you requested to delete is not present', StatusCodes.NOT_FOUND);
+        }
+        throw new AppError('Cannot destroy Airplane', StatusCodes.INTERNAL_SERVER_ERROR);
+    }
+}
+
+async function updateCity(id, data) {
+    try {
+        const city = await cityRepository.update(id, data);
+        return city;
+    } catch (error) {
+        if (error.statusCode == StatusCodes.NOT_FOUND) {
+            throw new AppError('The city you requested to update is not present', StatusCodes.NOT_FOUND);
+        }
+        throw new AppError('Cannot update city', StatusCodes.INTERNAL_SERVER_ERROR);
+    }
+}
+
 module.exports = {
-    createCity
+    createCity,
+    destroyCity,
+    updateCity
 }
